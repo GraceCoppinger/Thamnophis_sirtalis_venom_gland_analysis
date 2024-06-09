@@ -1,1 +1,259 @@
+# Say something about Rhett
+
+#Load libraries
+library(tidyverse)
+library(ggplot2)
+library(pheatmap)
+
+#Load in the csv
+TPM_df <- read_csv("Path_to_toxin_nontoxin_expression_tpm.csv")
+TPM_df <- TPM_df %>% mutate_if(is.character,as.factor)
+
+#source the below script from the toxcodan guide https://github.com/pedronachtigall/ToxCodAn/tree/master/Guide
+source("PlottingFunctions.R")
+TPM_df <- df_clean(TPM_df, class="class", toxin_family="toxin_family", colors=toxin_colors)
+
+# Impute 0 values
+# Take numeric values (columns 4-12), transpose them, impute zeros, and re-transpose
+TPM_df2 <- t(cmultRepl(t(TPM_df[,4:25]),output = "p-counts"))
+
+# Bind back to original dataframe
+TPM_df2 <- cbind(TPM_df[,1:3], TPM_df2)
+rownames(TPM_df2) <- TPM_df2$gene_id
+
+#Plot the average transcriptome
+FancyFigure(TPM_df2,"Average",class="class",toxin_family="toxin_family", colors=toxin_colors)
+
+#There are also options to plot individuals or male/female average
+FancyFigure(TPM_df2,"JLS178",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS181",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS187",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS202",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS216",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS223",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS224",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS228",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS242",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS247",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS248",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS249",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS253",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS254",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS255",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS256",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS257",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS260",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"JLS269",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"Female_Average",class="class",toxin_family="toxin_family", colors=toxin_colors)
+FancyFigure(TPM_df2,"Male_Average",class="class",toxin_family="toxin_family", colors=toxin_colors)
+ToxinPie(TPM_df2, "Female_Average", class="class")
+ToxinPie(TPM_df2, "Male_Average", class="class")
+
+#TranscompPlot
+#This plot is a comparison of the average female and male transcriptome.
+##You can also use this code to compare individuals
+TransCompPlot(TPM_df2, "Female_Average", "Male_Average")
+
+#Ontogeny_Graph
+#Load a csv describing the svl, sex, and average toxin expression for specific toxin families and the average toxin expression for each individual
+Sample<- read_csv("/Users/gracecoppinger/Desktop/Thamnophis/Sample/Tsirt_samples.csv")
+
+
+#You will need to build a plot for the four highest expressed toxin familys and the average toxin and nontoxin 
+#You will need to graph a linear regression and get the p-value and r-value for each toxin family and the average toxin and nontoxin for males and females
+#Finally you will create a scatter plot from the linear regression model 
+
+######
+#3FTx
+# Perform linear regression
+M_lm_model_3FTx <- lm(Avg_3FTx ~ SVL, data = Sample, subset = Sex == "M")
+F_lm_model_3FTx <- lm(Avg_3FTx ~ SVL, data = Sample, subset = Sex == "F")
+# Extract R-squared value and p-value
+F_r_squared_3FTx <- summary(F_lm_model_3FTx)$r.squared
+F_r_squared_3FTx
+F_p_value_3FTx <- summary(F_lm_model_3FTx)$coefficients[2,4]
+F_p_value_3FTx
+
+M_r_squared_3FTx <- summary(M_lm_model_3FTx)$r.squared
+M_r_squared_3FTx
+M_p_value_3FTx <- summary(M_lm_model_3FTx)$coefficients[2,4]
+M_p_value_3FTx
+
+# Create scatter plot with linear regression line
+FTx_plot <- ggplot(data=Sample, aes(x=SVL, y=Avg_3FTx, colour=Sex)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + theme_bw() +
+  labs(y = "3FTx Expression (TPM %)", x= "Snout Vent Length(cm)") + scale_color_manual(values=c("#d30b94", "#2f2aa0"))
+FTx_plot
+######
+#CTL
+# Perform linear regression
+lm_model_CTL <- lm(Avg_CTL ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_CTL <- summary(lm_model_CTL)$r.squared
+r_squared_CTL
+p_value_CTL <- summary(lm_model_CTL)$coefficients[2,4]
+p_value_CTL
+# Create scatter plot with linear regression line
+CTL_plot<-ggplot(data=Sample, aes(x=SVL, y=Avg_CTL, colour=Sex)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + theme_bw() +
+  labs(y = "CTL Expression (TPM %)", x= "Snout Vent Length(cm)") + scale_color_manual(values=c("#d30b94", "#2f2aa0"))
+CTL_plot
+######
+#CRISP
+# Perform linear regression
+lm_model_CRISP <- lm(Avg_CRISP ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_CRISP <- summary((lm_model_CRISP))$r.squared
+r_squared_CRISP
+p_value_CRISP <- summary(lm_model_CRISP)$coefficients[2,4]
+p_value_CRISP
+# Create scatter plot with linear regression line
+CRISP_plot<- ggplot(data=Sample, aes(x=SVL, y=Avg_CRISP, colour=Sex)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + theme_bw() +
+  labs(y = "CRISP Expression (TPM %)", x= "Snout Vent Length(cm)") + scale_color_manual(values=c("#d30b94", "#2f2aa0"))
+CRISP_plot
+######
+#SVMP
+# Perform linear regression
+lm_model_SVMP <- lm(Avg_SVMP ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_SVMP <- summary(lm_model_SVMP)$r.squared
+r_squared_SVMP
+p_value_SVMP <- summary(lm_model_SVMP)$coefficients[2,4]
+p_value_SVMP
+# Create scatter plot with linear regression line
+SVMP_plot<-ggplot(data=Sample, aes(x=SVL, y=Avg_SVMP, colour=Sex)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + theme_bw() +
+  labs(y = "SVMP Expression (TPM %)", x= "Snout Vent Length(cm)") + scale_color_manual(values=c("#d30b94", "#2f2aa0"))
+SVMP_plot
+
+#### Combining
+library("ggpubr")
+figure <- ggarrange(FTx_plot, SVMP_plot, CRISP_plot, CTL_plot,
+                    labels = c("A", "B", "C", "D"),
+                    ncol = 2, nrow = 2)
+figure
+
+
+######
+#All others
+# Perform linear regression
+lm_model_other <- lm(Avg_other ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_other <- summary(lm_model_other)$r.squared
+r_squared_other
+p_value_other <- summary(lm_model_other)$coefficients[2,4]
+p_value_other
+# Create scatter plot with linear regression line
+other_plot<-ggplot(data=Sample, aes(x=SVL, y=Avg_other)) +
+  geom_point(color="#201923") +
+  geom_smooth(method = "lm", se = FALSE, color = "#201923") + theme_bw() +
+  labs(y = "other Expression (TPM %)", x= "Snout Vent Length(cm)") + plot_layout(ncol = 2, nrow = 2)
+other_plot
+
+
+######
+#All toxins
+# Perform linear regression
+lm_model_TOXIN <- lm(Avg_TOXIN ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_TOXIN <- summary(lm_model_TOXIN)$r.squared
+r_squared_TOXIN
+p_value_TOXIN <- summary(lm_model_TOXIN)$coefficients[2,4]
+p_value_TOXIN
+# Create scatter plot with linear regression line
+TOXIN_plot<-ggplot(data=Sample, aes(x=SVL, y=Avg_TOXIN, colour=Sex)) +
+  geom_point(color="#201923") + 
+  geom_smooth(method = "lm", se = FALSE) + theme_bw() +
+  labs(y = "TOXIN Expression (TPM %)", x= "Snout Vent Length(cm)") + 
+  geom_point(data=Sample, aes(x=SVL, y=Avg_TOXIN, col=Sex)) +
+  scale_color_manual(values=c("#d30b94", "#2f2aa0"))
+TOXIN_plot 
+
+
+
+Males_Sample<- read_csv("/Users/gracecoppinger/Desktop/Male_avg.csv")
+MALETOXIN_plot<-ggplot(data=Males_Sample, aes(x=SVL, y=Avg_TOXIN)) +
+  geom_point(data=Males_Sample, aes(x=SVL, y=Avg_TOXIN), color="#2f2aa0") + 
+  geom_smooth(method = "lm", se = FALSE, color = "#2f2aa0") + theme_bw() +
+  labs(y = "Male toxin Expression (TPM %)", x= "Snout Vent Length(cm)") 
+MALETOXIN_plot
+Females_Sample<- read_csv("/Users/gracecoppinger/Desktop/Female_avg.csv")
+FEMALETOXIN_plot<-ggplot(data=Females_Sample, aes(x=SVL, y=Avg_TOXIN)) +
+  geom_point(data=Females_Sample, aes(x=SVL, y=Avg_TOXIN), color="#d30b94") + 
+  geom_smooth(method = "lm", se = FALSE, color = "#d30b94") + theme_bw() +
+  labs(y = "Female toxin Expression (TPM %)", x= "Snout Vent Length(cm)") 
+FEMALETOXIN_plot
+
+
+
+######
+#All nontoxins
+# Perform linear regression
+lm_model_NONTOXIN <- lm(Avg_Nontoxin ~ SVL, data = Sample)
+# Extract R-squared value and p-value
+r_squared_NONTOXIN <- summary(lm_model_NONTOXIN)$r.squared
+r_squared_NONTOXIN
+p_value_NONTOXIN <- summary(lm_model_NONTOXIN)$coefficients[2,4]
+p_value_NONTOXIN
+# Create scatter plot with linear regression line
+NONTOXIN_plot<-ggplot(data=Sample, aes(x=SVL, y=Avg_Nontoxin)) +
+  geom_point(color="#201923") +
+  geom_smooth(method = "lm", se = FALSE, color = "#201923") + theme_bw() +
+  labs(y = "NONTOXIN Expression (TPM %)", x= "Snout Vent Length(cm)") 
+NONTOXIN_plot
+
+
+
+
+
+#Statistical test for male v female toxin expression
+#Henning
+setwd("/Users/gracecoppinger/Desktop/")
+FvM_tpm <- read_csv("/Users/gracecoppinger/Desktop/Toxins_over500tpm.csv")
+Female<- c(49, 48, 51, 47, 39, 35, 36, 29, 41, 43)
+Males<- c(47, 48, 38, 41, 49, 46, 51,41, 48)
+var.test(Female,Males)
+t.test(Female,Males,var.equal=TRUE, paired=FALSE)
+boxplot(Female,Males)
+#Make plot pretty
+ggplot(FvM_tpm, aes(x=Sex, y=Toxins, fill=Sex)) + geom_boxplot()  +theme_classic()+ scale_fill_manual(values=c('#d30b94', '#2f2aa0')) +geom_jitter(width=0.17, size=5, color='#0ec434')
+
+
+
+M_lm_model_TOXIN <- lm(Avg_TOXIN ~ SVL, data = Sample, subset = Sex == "M")
+
+F_lm_model_TOXIN <- lm(Avg_TOXIN ~ SVL, data = Sample, subset = Sex == "F")
+# Extract R-squared value and p-value
+F_r_squared_TOXIN <- summary(F_lm_model_TOXIN)$r.squared
+F_r_squared_TOXIN
+F_p_value_TOXIN <- summary(F_lm_model_TOXIN)$coefficients[2,4]
+F_p_value_TOXIN
+
+M_r_squared_TOXIN <- summary(M_lm_model_TOXIN)$r.squared
+M_r_squared_TOXIN
+M_p_value_TOXIN <- summary(M_lm_model_TOXIN)$coefficients[2,4]
+M_p_value_TOXIN
+
+
+
+M_lm_model_3FTx2 <- lm(Avg_3FTx ~ SVL*Sex, data = Sample)
+summary(M_lm_model_3FTx2)
+
+M_lm_model_SVMP2 <- lm(Avg_SVMP ~ SVL*Sex, data = Sample)
+summary(M_lm_model_SVMP2)
+
+M_lm_model_CTL2 <- lm(Avg_CTL ~ SVL*Sex, data = Sample)
+summary(M_lm_model_CTL2)
+
+M_lm_model_CRISP2 <- lm(Avg_CRISP ~ SVL*Sex, data = Sample)
+summary(M_lm_model_CRISP2)
+
+
+library(car)
+Anova(M_lm_model_3FTx2)
 
