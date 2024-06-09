@@ -14,6 +14,6 @@ This repository contains the data and code for LINK TO PAPER ONCE PUBLISHED incl
 |-------------------|-------------|
 | RSEM              | This folder contains the RSEM analysis output |
 | Sequence          | This folder contains the sequence data not on Genbank |
-| Transcriptome Scripts | This folder contains scripts used to generate transcriptome visualization |
-| Intraspecific Scripts | This folder contains scripts used to test for intraspecific venom variaition |
+| Transcriptome Scripts | This folder contains scripts used to generate transcriptome summary and visualization |
+| Intraspecific Scripts | This folder contains scripts used to test for intraspecific venom variaition analysis |
 </center>
