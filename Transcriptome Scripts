@@ -46,6 +46,8 @@ FancyFigure(TPM_df2,"JLS260",class="class",toxin_family="toxin_family", colors=t
 FancyFigure(TPM_df2,"JLS269",class="class",toxin_family="toxin_family", colors=toxin_colors)
 FancyFigure(TPM_df2,"Female_Average",class="class",toxin_family="toxin_family", colors=toxin_colors)
 FancyFigure(TPM_df2,"Male_Average",class="class",toxin_family="toxin_family", colors=toxin_colors)
+
+#Obtain just the pie graphs to generate male and femaale comparison
 ToxinPie(TPM_df2, "Female_Average", class="class")
 ToxinPie(TPM_df2, "Male_Average", class="class")
 
