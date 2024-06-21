@@ -4,7 +4,7 @@
 #[![](https://img.shields.io/badge/License-CC%20BY-blue)](https://creativecommons.org/licenses/by/4.0/)
 
 
-This repository contains the data and code for LINK TO PAPER ONCE PUBLISHED including transcriptome expression estimates, transcriptome orthofinder results, scripts to describe transcriptome, and scripts to investigate intraspecific variation.
+This repository contains the data and code for LINK TO PAPER ONCE PUBLISHED including transcriptome expression estimates, scripts to describe transcriptome, and scripts to investigate intraspecific variation.
 
 # Table of Contents
 
