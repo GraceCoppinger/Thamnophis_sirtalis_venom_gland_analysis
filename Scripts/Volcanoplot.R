@@ -1,3 +1,29 @@
+### DESEQ2 & Volcano Plots orginal script provided by Samuel Hirst with modifications by Grace Coppinger
+
+# There will be a bit of repeat from the normalization
+
+# Read the CSV file as a data frame without specifying row names
+countData_df <- read.csv("gene_count_matrix_GC.csv", row.names = NULL)
+
+# Extract unique row names from the "gene_id" column and make them unique
+unique_row_names <- make.unique(countData_df$gene_id)
+
+# Assign unique row names to the data frame
+rownames(countData_df) <- unique_row_names
+countData_df <- countData_df[-1]
+
+# Convert the data frame to a matrix
+countData <- as.matrix(countData_df)
+
+colData <- read.csv("Tsirt_meta_data.csv", row.names = "Sample_ID")
+colData$Sex <- factor(colData$Sex, levels = c("F", "M"))
+
+all(rownames(colData) %in% colnames(countData))
+
+countData <- countData[, rownames(colData)]
+
+all(rownames(colData) == colnames(countData))
+
 ## This will be for labeling the volcano plots
 # I have all my venom genes annotated so they begin with VENOM-. If you don't have that, you'll just have to search using a long character string using the toxin gene names
 Venom <- c("VENOM-")
