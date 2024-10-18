@@ -156,7 +156,6 @@ NONTOXIN_plot
 
 
 #Statistical test for male v female toxin expression
-#Henning
 setwd("/Users/gracecoppinger/Desktop/")
 FvM_tpm <- read_csv("/Users/gracecoppinger/Desktop/Toxins_over500tpm.csv")
 Female<- c(49, 48, 51, 47, 39, 35, 36, 29, 41, 43)
@@ -200,3 +199,5 @@ summary(M_lm_model_CRISP2)
 
 library(car)
 Anova(M_lm_model_3FTx2)
+
+
