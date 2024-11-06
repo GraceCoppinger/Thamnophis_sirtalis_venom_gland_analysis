@@ -13,6 +13,6 @@ This repository contains the data and code for LINK TO PAPER ONCE PUBLISHED incl
 | Repository Folder | Description |
 |-------------------|-------------|
 | RSEM              | This folder contains the RSEM analysis output |
-| Sequence          | This folder contains any sequence data not already included on Genbank (ADD ACSENSION NUMBERS) |
+| Sequence          | This folder contains any sequence data not already included on Genbank |
 | Scripts | This folders contains R scripts used to generate transcriptome summary and visualization of intraspecific (sex and size) venom variaition  |
 </center>
