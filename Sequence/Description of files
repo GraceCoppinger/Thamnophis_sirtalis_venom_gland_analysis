@@ -1,1 +1,4 @@
-This folder will contain any sequence data not already included on Genbank (ADD ACSENSION NUMBERS). 
+This folder will contain any sequence data not already included on Genbank. 
+You can acsess all files on Genbank under the Bioproject PRJNA88989.
+
+I have attached all related accsension IDs for individuals in the file labeled "Metadata_GenbankIDs"
